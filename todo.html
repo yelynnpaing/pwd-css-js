@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To Do List</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/all.min.css">
+
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-6">
+                <div class="d-flex justify-content-between">
+                    <h3 class="text-success fw-bold mb-4 text-center">
+                        <i class="fa-solid fa-pen-to-square"></i>
+                        To Do List <span id="count" class="badge bg-secondary text-white">0</span> 
+                    </h3>
+                    <a href="#" id="clear" class="text-decoration-none fs-4">Clear</a> 
+                </div>   
+                <div class="input-group mb-4">
+                    <input type="text" class="form-control" placeholder="write something">
+                    <button class="btn btn-group btn-primary align-items-center">
+                        Add
+                        <i class="fas fa-plus ms-2"></i>
+                    </button> 
+                </div>       
+                <ul id="todo" class="list-group mb-5">
+                </ul>
+                <ul id="check" class="list-group">
+                </ul>
+            </div>
+        </div>
+    </div>
+        
+    <script>
+        let data = getData();
+        data.map(item => createElement(item.text, item.done));
+
+        function getData() {
+            return JSON.parse(localStorage.getItem("data")) || [];
+        }
+
+        function saveData() {
+            let data = getData();
+            data.push({text, done:false});
+            localStorage.setItem("data", JSON.stringify(data));
+        }
+ 
+        function deleteData(text) { 
+            let data = getData();
+            let result = data.filter(item => item.text !== text);
+            localStorage.setItem("data", JSON.stringify(result));
+        }
+
+        function clearData() {
+            let data = getData();
+            let result = data.filter(item => !item.done);
+            localStorage.setItem("data", JSON.stringify(result));
+        }
+
+        function markDone(text) {
+            let data = getData();
+            let result = data.map(item => {
+                if(item.text === text) item.done = true;
+                return item;
+            });
+            localStorage.setItem("data", JSON.stringify(result));
+        }
+
+        function updateCount() {
+            document.querySelector("#count").textContent = document.querySelectorAll("#todo li").length;
+        }
+        document.querySelector("#clear").onclick = function () {
+            console.log("clear");
+            document.querySelector("#check").innerHTML = "";
+            clearData();
+        }
+        document.querySelector("button").onclick = function(){
+            text = document.querySelector("input").value;
+            if(!text) return false;
+            createElement(text);
+            document.querySelector("input").value = "";
+            document.querySelector("input").focus();
+            updateCount();
+            saveData(text);
+        }
+
+        document.querySelector("input").onkeydown = function(e) {
+            if(e.key == "Enter") {
+                document.querySelector('button').onclick();
+            }
+        }
+
+        function createElement(text, done = false) {
+            let li = document.createElement("li");
+            li.textContent = text;
+            let check = document.createElement("a");
+            check.setAttribute("href", "#");
+            // check.textContent = "check";
+            check.innerHTML = '<i class="fa fa-check"></i>';
+            check.classList.add("ms-3")
+            check.onclick = function() {
+                document.querySelector("#check").appendChild(check.parentElement);
+                document.querySelector("#check").classList.add("opacity-50")
+                check.remove();
+                updateCount();
+                markDone(text);
+            }
+            if(!done) li.appendChild(check);
+
+
+            let del = document.createElement("a");
+            del.setAttribute("href", "#");
+            // del.textContent = "Del";
+            del.innerHTML='<i class="fa-solid fa-trash"></i>';
+            del.classList.add("ms-3");
+            del.onclick = function() {
+                del.parentElement.remove();
+                updateCount();
+                deleteData(text);
+            }
+            li.appendChild(del);
+
+            if(done){
+                document.querySelector("#check").appendChild(li);
+                li.classList.add("list-group-item");
+            } else {
+                document.querySelector("#todo").appendChild(li);
+                li.classList.add("list-group-item");
+            }
+        }
+
+
+    </script>
+    
+</body>
+</html>

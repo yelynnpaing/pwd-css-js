@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+
+    <script>
+        let users = [
+            {name:"alice" , age:20 , gender:"female"},
+            {name:"bob" , age:22 , gender:"male"},
+            {name:"crist" , age:18 , gender:"male"},
+            {name:"dave" , age:24 , gender:"male"},
+            {name:"eve" , age:17 , gender:"female"},
+        ];
+
+        console.log( users.map(user => user.name) );
+        console.log( users.filter(user => user.gender == "female") );
+        console.log(
+            users
+            .filter(user => user.gender == "male")
+            .map(user => user.name)
+        );
+        
+        let dog = {
+            name : "Bobby",
+            legs : 4,
+            run : function() {
+                console.log(`${this.name} is running.....`)
+            }
+        }
+        dog.run();
+
+        
+
+    </script>
+</body>
+</html>
